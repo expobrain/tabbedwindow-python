@@ -198,7 +198,7 @@ class TabBar(QtGui.QTabBar):
         See QWidget.mousePressEvent()
         """
         # Create ghost window if needed
-        pos = event.pos()
+        pos = self.mapFromGlobal(event.globalPos())
 
         if event.button() == Qt.LeftButton and self.tabAt(pos) > -1:
             self._ghost = GhostWindow(self, pos)
