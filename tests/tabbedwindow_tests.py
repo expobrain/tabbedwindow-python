@@ -10,7 +10,20 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import Qt
 
 
-class MousePress(QtGui.QMouseEvent):
+class MouseEvent(QtGui.QMouseEvent):
+
+    # Returns global's fake mouse position
+    def globalPos(self):
+        return self.pos()
+
+    def globalX(self):
+        return self.globalPos().x()
+
+    def globalY(self):
+        return self.globalPos().y()
+
+
+class MousePress(MouseEvent):
 
     def __init__(self, pos):
         super(MousePress, self).__init__(
@@ -28,27 +41,13 @@ class MouseRelease(QtGui.QMouseEvent):
         )
 
 
-class MouseMove(QtGui.QMouseEvent):
+class MouseMove(MouseEvent):
 
     def __init__(self, pos):
-        # Call superclass
         super(MouseMove, self).__init__(
             QtCore.QEvent.MouseMove, pos,
             Qt.LeftButton, Qt.NoButton, Qt.NoModifier
         )
-
-        # Protected attributes
-        self._pos = pos
-
-    # Returns global's fake mouse position
-    def globalPos(self):
-        return self._pos
-
-    def globalX(self):
-        return self._pos.x()
-
-    def globalY(self):
-        return self._pos.y()
 
 
 class WidgetTestsMixin(object):
@@ -166,10 +165,10 @@ class GhostWindowTests(WidgetTestsMixin, unittest.TestCase):
         # Check if first tab has geometry and save top left corner
         self.assertFalse(self.tabbar.tabRect(0).isNull())
 
-        self.top_left = self.tabbar.tabRect(0).topLeft()
+        self.tab_pos = self.tabbar.tabRect(0).topLeft()
 
         # Create ghost window
-        self.ghost = GhostWindow(self.tabbar, self.top_left)
+        self.ghost = GhostWindow(self.tabbar, self.tab_pos)
 
     def test_constructor(self):
         self.assertEqual(self.window.geometry(), self.ghost.geometry())
@@ -179,7 +178,7 @@ class GhostWindowTests(WidgetTestsMixin, unittest.TestCase):
         self.assertEqual(self.ghost.index(), 0)
         self.assertEqual(
             self.ghost.offset(),
-            self.tabbar.mapToGlobal(self.top_left) - self.window.pos()
+            self.tabbar.mapToGlobal(self.tab_pos) - self.window.pos()
         )
 
     def test_move_with_offset(self):
@@ -222,9 +221,12 @@ class TabBarTests(WidgetTestsMixin, unittest.TestCase):
         self.window.move(QtCore.QPoint(100, 100))
 
         # Create ghost window
-        self.tabbar = self.window.tabs.tabBar()
-        self.top_left = self.tabbar.tabRect(0).topLeft()
-        self.ghost = GhostWindow(self.tabbar, self.top_left)
+        tabbar = self.window.tabs.tabBar()
+        local_pos = tabbar.tabRect(0).topLeft()
+
+        self.tabbar = tabbar
+        self.tab_pos = tabbar.mapToGlobal(local_pos)
+        self.ghost = GhostWindow(tabbar, local_pos)
 
     def test_create_new_window(self):
         index = self.ghost.index()
@@ -279,7 +281,7 @@ class TabBarTests(WidgetTestsMixin, unittest.TestCase):
         self.assertIsNone(self.tabbar._ghost)  # pylint: disable=W0212
 
         # Simulate mouse press event
-        self.tabbar.mousePressEvent(MousePress(self.top_left))
+        self.tabbar.mousePressEvent(MousePress(self.tab_pos))
 
         # Check
         # pylint: disable=W0212
@@ -289,11 +291,10 @@ class TabBarTests(WidgetTestsMixin, unittest.TestCase):
 
     def test_mouse_move_event(self):
         # Default state
-        self.tabbar.mousePressEvent(MousePress(self.top_left))
+        self.tabbar.mousePressEvent(MousePress(self.tab_pos))
 
         # Simulate mouse move
-        pos = self.tabbar.mapToGlobal(self.top_left)
-        pos += QtCore.QPoint(
+        pos = self.tab_pos + QtCore.QPoint(
             QtGui.QApplication.startDragDistance(),
             QtGui.QApplication.startDragDistance()
         )
