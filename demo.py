@@ -40,3 +40,10 @@ class TabbedWindowTests(TabbedWindow):
 
         if sys.platform == "darwin":
             QtCore.QTimer.singleShot(0, self.raise_)
+
+
+if __name__ == "__main__":
+    app = QtGui.QApplication([])
+    wnd = TabbedWindowTests()
+    wnd.show()
+    app.exec_()
