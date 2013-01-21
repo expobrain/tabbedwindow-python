@@ -300,15 +300,14 @@ class TabbedWindow(QtGui.QMainWindow):
     activated and hidden when it'll be deactivated.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self):
         """
-        Constructor accepts an optional window's parent
+        Empty constructor.
 
-        :param parent: The optional window's parent
-        :type parent: QWidget
+        The tabbed's window parent will be the Qt desktop widget.
         """
         # Call superclass
-        super(TabbedWindow, self).__init__(parent)
+        super(TabbedWindow, self).__init__(QtGui.QApplication.desktop())
 
         # Public attributes
         self.tabs = TabWidget(self)
