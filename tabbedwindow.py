@@ -216,22 +216,19 @@ class TabBar(QtGui.QTabBar):
         if self._ghost:
             self._ghost.moveWithOffset(event.globalPos())
 
-    def mouseReleaseEvent(self, event):
+    def tabDropEvent(self, event):
         """
         Drops the current dragged view and creates a new window if no tab bar
         under the event's screen position otherwise move the dragged view into
         the tab bar under the mouse event's position.
 
-        Finishing by destroying the ghost windows widget and closing the
-        current window if no tabs left.
+        Close the current window if no more tabs are left.
 
-        See QWidget.mouseReleaseEvent()
+        This method can be overridden to implement custom tab drop's behaviour.
+
+        :param event: The mouse release event
+        :type: QMouseEvent
         """
-        # Call superclass if not a left button release mouse event
-        if event.button() != Qt.LeftButton:
-            super(TabBar, self).mouseReleaseEvent(event)
-            return
-
         # Enter code only if drag is far enough
         pos = event.globalPos()
 
@@ -250,6 +247,25 @@ class TabBar(QtGui.QTabBar):
                 else:
                     # Creates a new window and move the tab
                     self._create_new_window(self._ghost)
+
+    def mouseReleaseEvent(self, event):
+        """
+        Analyse the mouse release event calling only the superclass if the
+        released button is not the left mouse button otherwise pass the mouse
+        release event to the :py:meth:`.tabbedwindow.TabBar.tabDropEvent()`
+        handler.
+
+        Finishing by destroying the ghost windows widget.
+
+        See QWidget.mouseReleaseEvent()
+        """
+        # Call superclass if not a left button release mouse event
+        if event.button() != Qt.LeftButton:
+            super(TabBar, self).mouseReleaseEvent(event)
+            return
+
+        # Handle mouse release event
+        self.tabDropEvent(event)
 
         # Close ghost window
         self._ghost.close()
