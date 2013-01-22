@@ -12,6 +12,12 @@ from PyQt4.QtCore import Qt
 
 class MouseEvent(QtGui.QMouseEvent):
 
+    def __init__(self, pos):
+        super(MouseEvent, self).__init__(
+            QtCore.QEvent.MouseButtonPress, pos,
+            Qt.LeftButton, Qt.NoButton, Qt.NoModifier
+        )
+
     # Returns global's fake mouse position
     def globalPos(self):
         return self.pos()
@@ -21,34 +27,6 @@ class MouseEvent(QtGui.QMouseEvent):
 
     def globalY(self):
         return self.globalPos().y()
-
-
-class MousePress(MouseEvent):
-
-    def __init__(self, pos):
-        super(MousePress, self).__init__(
-            QtCore.QEvent.MouseButtonPress, pos,
-            Qt.LeftButton, Qt.NoButton, Qt.NoModifier
-        )
-
-
-class MouseRelease(QtGui.QMouseEvent):
-
-    def __init__(self, pos):
-        # Call superclass
-        super(MouseRelease, self).__init__(
-            QtCore.QEvent.MouseButtonRelease, pos,
-            Qt.LeftButton, Qt.NoButton, Qt.NoModifier
-        )
-
-
-class MouseMove(MouseEvent):
-
-    def __init__(self, pos):
-        super(MouseMove, self).__init__(
-            QtCore.QEvent.MouseMove, pos,
-            Qt.LeftButton, Qt.NoButton, Qt.NoModifier
-        )
 
 
 class WidgetTestsMixin(object):
@@ -282,7 +260,7 @@ class TabBarTests(WidgetTestsMixin, unittest.TestCase):
         self.assertIsNone(self.tabbar._ghost)  # pylint: disable=W0212
 
         # Simulate mouse press event
-        self.tabbar.mousePressEvent(MousePress(self.tab_pos))
+        self.tabbar.mousePressEvent(MouseEvent(self.tab_pos))
 
         # Check
         # pylint: disable=W0212
@@ -292,7 +270,7 @@ class TabBarTests(WidgetTestsMixin, unittest.TestCase):
 
     def test_mouse_move_event(self):
         # Default state
-        self.tabbar.mousePressEvent(MousePress(self.tab_pos))
+        self.tabbar.mousePressEvent(MouseEvent(self.tab_pos))
 
         # pylint: disable=W0212
         self.assertIsInstance(self.tabbar._ghost, GhostWindow)
@@ -304,7 +282,7 @@ class TabBarTests(WidgetTestsMixin, unittest.TestCase):
             QtGui.QApplication.startDragDistance()
         )
 
-        self.tabbar.mouseMoveEvent(MouseMove(pos))
+        self.tabbar.mouseMoveEvent(MouseEvent(pos))
 
         # Check
         # pylint: disable=W0212
@@ -327,12 +305,12 @@ class TabBarTests(WidgetTestsMixin, unittest.TestCase):
 
         self.assertIsNone(QtGui.QApplication.widgetAt(pos))
 
-        self.tabbar.mousePressEvent(MousePress(self.tab_pos))
-        self.tabbar.mouseMoveEvent(MouseMove(pos))
+        self.tabbar.mousePressEvent(MouseEvent(self.tab_pos))
+        self.tabbar.mouseMoveEvent(MouseEvent(pos))
 
         with patch.object(self.tabbar, "_create_new_window") as mock_create:
             # Simulate mouse release
-            self.tabbar.mouseReleaseEvent(MouseRelease(pos))
+            self.tabbar.mouseReleaseEvent(MouseEvent(pos))
 
             # Check
             # pylint: disable=W0212
@@ -353,12 +331,12 @@ class TabBarTests(WidgetTestsMixin, unittest.TestCase):
         pos = dest.tabs.tabBar().tabRect(0).topLeft()
         pos = dest.tabs.tabBar().mapToGlobal(pos)
 
-        self.tabbar.mousePressEvent(MousePress(self.tab_pos))
-        self.tabbar.mouseMoveEvent(MouseMove(pos))
+        self.tabbar.mousePressEvent(MouseEvent(self.tab_pos))
+        self.tabbar.mouseMoveEvent(MouseEvent(pos))
 
         with patch.object(self.tabbar, "_move_to_window") as mock_create:
             # Simulate mouse release
-            event = MouseRelease(pos)
+            event = MouseEvent(pos)
             ghost = self.tabbar._ghost
 
             self.tabbar.mouseReleaseEvent(event)
