@@ -233,15 +233,15 @@ class TabBar(QtGui.QTabBar):
             return
 
         # Enter code only if drag is far enough
-        if self._ghost.dragStarted(event.globalPos()):
+        pos = event.globalPos()
+
+        if self._ghost.dragStarted(pos):
             tabs = QtGui.QApplication.widgetAt(event.globalPos())
-            raise RuntimeError(event.globalPos(),tabs)
 
             # Choose action by the widget under the mouse's coordinates
-            if isinstance(tabs, TabWidget):
+            if isinstance(tabs, TabBar):
                 # Move the dragged tab into the window under the cursor
-                self._moveToWindow(
-                    tabs.window(), event.globalPos(), self._ghost)
+                self._moveToWindow(tabs.window(), pos, self._ghost)
 
             else:
                 if self.count() == 1:
