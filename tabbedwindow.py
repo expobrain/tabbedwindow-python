@@ -147,7 +147,7 @@ class TabBar(QtGui.QTabBar):
 
         return wnd
 
-    def _moveToWindow(self, tabbed_wnd, pos, ghost_wnd):
+    def _move_to_window(self, tabbed_wnd, pos, ghost_wnd):
         """
         Move the view at the index referenced by the
         :py:meth:`.tabbedwindow.GhostWindow.index()` attribute into the given
@@ -241,7 +241,7 @@ class TabBar(QtGui.QTabBar):
             # Choose action by the widget under the mouse's coordinates
             if isinstance(tabs, TabBar):
                 # Move the dragged tab into the window under the cursor
-                self._moveToWindow(tabs.window(), pos, self._ghost)
+                self._move_to_window(tabs.window(), pos, self._ghost)
 
             else:
                 if self.count() == 1:

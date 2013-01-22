@@ -255,7 +255,7 @@ class TabBarTests(WidgetTestsMixin, unittest.TestCase):
         text = self.window.tabs.tabText(index)
 
         # Move tab into new window
-        self.tabbar._moveToWindow(  # pylint: disable=W0212
+        self.tabbar._move_to_window(  # pylint: disable=W0212
             dest, dest.tabs.tabBar().tabRect(0).topLeft(), self.ghost)
 
         # Check
@@ -356,7 +356,7 @@ class TabBarTests(WidgetTestsMixin, unittest.TestCase):
         self.tabbar.mousePressEvent(MousePress(self.tab_pos))
         self.tabbar.mouseMoveEvent(MouseMove(pos))
 
-        with patch.object(self.tabbar, "_moveToWindow") as mock_create:
+        with patch.object(self.tabbar, "_move_to_window") as mock_create:
             # Simulate mouse release
             event = MouseRelease(pos)
             ghost = self.tabbar._ghost
