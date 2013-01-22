@@ -327,7 +327,7 @@ class TabBarTests(WidgetTestsMixin, unittest.TestCase):
 
         self.assertIsNone(QtGui.QApplication.widgetAt(pos))
 
-        self.tabbar.mousePressEvent(MousePress(self.top_left))
+        self.tabbar.mousePressEvent(MousePress(self.tab_pos))
         self.tabbar.mouseMoveEvent(MouseMove(pos))
 
         with patch.object(self.tabbar, "_createNewWindow") as mock_create:
@@ -353,7 +353,7 @@ class TabBarTests(WidgetTestsMixin, unittest.TestCase):
         pos = dest.tabs.tabBar().tabRect(0).topLeft()
         pos = dest.tabs.tabBar().mapToGlobal(pos)
 
-        self.tabbar.mousePressEvent(MousePress(self.top_left))
+        self.tabbar.mousePressEvent(MousePress(self.tab_pos))
         self.tabbar.mouseMoveEvent(MouseMove(pos))
 
         with patch.object(self.tabbar, "_moveToWindow") as mock_create:
