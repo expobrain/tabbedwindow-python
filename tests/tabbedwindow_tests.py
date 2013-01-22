@@ -289,7 +289,7 @@ class TabBarTests(WidgetTestsMixin, unittest.TestCase):
         self.assertEqual(self.tabbar._ghost.pos(), pos)
         # pylint: enable=W0212
 
-    def test_mouse_relase_new_window(self):
+    def test_mouse_release_new_window(self):
         """
         Release mouse create new window
         """
@@ -317,7 +317,7 @@ class TabBarTests(WidgetTestsMixin, unittest.TestCase):
             mock_create.assert_called_once_with(self.tabbar._ghost)
             # pylint: enable=W0212
 
-    def test_mouse_relase_move_tab(self):
+    def test_mouse_release_move_tab(self):
         """
         Release mouse moving a tab into another window
         """
