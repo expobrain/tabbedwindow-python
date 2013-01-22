@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import division, print_function, unicode_literals
-from tabbedwindow import TabbedWindow
+from tabbedwindow.tabbedwindow import TabbedWindow
 import sys
 from PyQt4 import QtGui, QtCore
 
