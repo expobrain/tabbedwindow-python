@@ -236,7 +236,7 @@ class TabBar(QtGui.QTabBar):
         pos = event.globalPos()
 
         if self._ghost.dragStarted(pos):
-            tabs = QtGui.QApplication.widgetAt(event.globalPos())
+            tabs = QtGui.QApplication.widgetAt(pos)
 
             # Choose action by the widget under the mouse's coordinates
             if isinstance(tabs, TabBar):
