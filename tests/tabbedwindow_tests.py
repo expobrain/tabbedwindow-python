@@ -35,6 +35,7 @@ class MousePress(MouseEvent):
 class MouseRelease(QtGui.QMouseEvent):
 
     def __init__(self, pos):
+        # Call superclass
         super(MouseRelease, self).__init__(
             QtCore.QEvent.MouseButtonRelease, pos,
             Qt.LeftButton, Qt.NoButton, Qt.NoModifier
@@ -66,7 +67,6 @@ class WidgetTestsMixin(object):
             assert(len(gc.garbage) == 0)
         except AssertionError:
             raise AssertionError(gc.get_referrers(*gc.garbage))
-
 
 
 class TabbedWindowTests(WidgetTestsMixin, unittest.TestCase):
@@ -215,6 +215,7 @@ class TabBarTests(WidgetTestsMixin, unittest.TestCase):
         # Set up
         self.window = TabbedWindow()
         self.window.addView(QtGui.QWidget(), "test")
+        self.window.show()
 
         # Move the window just away from the screen's origin to avoid problems
         # with top/right toolbars
@@ -293,6 +294,10 @@ class TabBarTests(WidgetTestsMixin, unittest.TestCase):
         # Default state
         self.tabbar.mousePressEvent(MousePress(self.tab_pos))
 
+        # pylint: disable=W0212
+        self.assertIsInstance(self.tabbar._ghost, GhostWindow)
+        # pylint: enable=W0212
+
         # Simulate mouse move
         pos = self.tab_pos + QtCore.QPoint(
             QtGui.QApplication.startDragDistance(),
@@ -305,3 +310,59 @@ class TabBarTests(WidgetTestsMixin, unittest.TestCase):
         # pylint: disable=W0212
         self.assertEqual(self.tabbar._ghost.pos(), pos)
         # pylint: enable=W0212
+
+    def test_mouse_relase_new_window(self):
+        """
+        Release mouse create new window
+        """
+        # Add extra tab
+        self.window.addView(QtGui.QWidget(), "test")
+
+        self.assertGreater(self.window.tabs.count(), 1)
+
+        # Simulate mouse press and move outside the window area
+        pos = self.window.geometry().topRight()
+        pos = self.window.mapToGlobal(pos)
+        pos += QtCore.QPoint(10,10)
+
+        self.assertIsNone(QtGui.QApplication.widgetAt(pos))
+
+        self.tabbar.mousePressEvent(MousePress(self.top_left))
+        self.tabbar.mouseMoveEvent(MouseMove(pos))
+
+        with patch.object(self.tabbar, "_createNewWindow") as mock_create:
+            # Simulate mouse release
+            self.tabbar.mouseReleaseEvent(MouseRelease(pos))
+
+            # Check
+            # pylint: disable=W0212
+            mock_create.assert_called_once_with(self.tabbar._ghost)
+            # pylint: enable=W0212
+
+    def test_mouse_relase_move_tab(self):
+        """
+        Release mouse moving a tab into another window
+        """
+        # Add extra window
+        dest = TabbedWindow()
+        dest.addView(QtGui.QWidget(), "test")
+        dest.move(self.window.geometry().topRight())
+        dest.show()
+
+        # Simulate mouse press and move outside the window area
+        pos = dest.tabs.tabBar().tabRect(0).topLeft()
+        pos = dest.tabs.tabBar().mapToGlobal(pos)
+
+        self.tabbar.mousePressEvent(MousePress(self.top_left))
+        self.tabbar.mouseMoveEvent(MouseMove(pos))
+
+        with patch.object(self.tabbar, "_moveToWindow") as mock_create:
+            # Simulate mouse release
+            event = MouseRelease(pos)
+            ghost = self.tabbar._ghost
+
+            self.tabbar.mouseReleaseEvent(event)
+
+            # Check
+            mock_create.assert_called_once_with(  # pylint: disable=W0212
+                dest, event.globalPos(), ghost)
