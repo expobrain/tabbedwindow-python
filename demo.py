@@ -6,11 +6,11 @@ import sys
 from PyQt4 import QtGui, QtCore
 
 
-class TabbedWindowTests(TabbedWindow):
+class Demo(TabbedWindow):
 
     def __init__(self):
         # Call superclass
-        super(TabbedWindowTests, self).__init__()
+        super(Demo, self).__init__()
 
         # Create child windows
         red = QtGui.QMainWindow()
@@ -44,6 +44,6 @@ class TabbedWindowTests(TabbedWindow):
 
 if __name__ == "__main__":
     app = QtGui.QApplication([])
-    wnd = TabbedWindowTests()
+    wnd = Demo()
     wnd.show()
     app.exec_()
