@@ -116,7 +116,7 @@ class TabBar(QtGui.QTabBar):
         # Protected attributes
         self._ghost = None
 
-    def _createNewWindow(self, ghost_wnd):
+    def _create_new_window(self, ghost_wnd):
         """
         Creates and returns new window fetching geometry information from the
         given :py:class:`.tabbedwindow.GhostWindow` instance and moving the
@@ -249,7 +249,7 @@ class TabBar(QtGui.QTabBar):
                     self.window().move(self._ghost.pos())
                 else:
                     # Creates a new window and move the tab
-                    self._createNewWindow(self._ghost)
+                    self._create_new_window(self._ghost)
 
         # Close ghost window
         self._ghost.close()
