@@ -28,7 +28,7 @@ class Demo(TabbedWindow):
 
         # Add test toolbar
         toolbar = red.addToolBar("red_toolbar")
-        toolbar.addAction("Red Aaction")
+        toolbar.addAction("Red Action")
 
         # Add test menubar
         action = QtGui.QAction("Green Action", green)
