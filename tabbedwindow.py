@@ -38,7 +38,7 @@ class GhostWindow(QtGui.QWidget):
     user.
 
     When moving this widget on the screen use
-    :py:class:`.`tabbedwindow.moveWithOffest()` instead of QWidget.move() so
+    :py:class:`.tabbedwindow.moveWithOffest()` instead of QWidget.move() so
     the mouse cursor will maintain the current offset from the upper left
     corner of the window as when the D&D operation has started.
     """
