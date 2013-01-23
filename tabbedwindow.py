@@ -293,8 +293,9 @@ class TabBar(QtGui.QTabBar):
         self.tabDropEvent(event)
 
         # Close ghost window
-        self._ghost.close()
-        self._ghost = None
+        if self._ghost:
+            self._ghost.close()
+            self._ghost = None
 
 
 class TabWidget(QtGui.QTabWidget):
