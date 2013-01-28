@@ -156,7 +156,7 @@ class TabBar(QtGui.QTabBar):
         wnd = TabbedWindow()
         wnd.setGeometry(ghost_wnd.geometry())
 
-        # Move tab into new window
+        # Move tab into new window
         views = self.parent()
         index = ghost_wnd.index()
 
