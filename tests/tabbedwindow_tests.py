@@ -84,6 +84,13 @@ class TabbedWindowTests(WidgetTestsMixin, unittest.TestCase):
         # Set up
         self.window = TabbedWindow()
 
+    def test_clone(self):
+        rect = self.window.geometry().adjusted(10, 10, 10, 10)
+        clone = self.window.clone(rect)
+
+        self.assertIsInstance(clone, TabbedWindow)
+        self.assertEqual(clone.geometry(), rect)
+
     def test_add_view(self):
         # Add view
         view = QtGui.QWidget()

@@ -146,15 +146,15 @@ class TabBar(QtGui.QTabBar):
         Creates and returns new window fetching geometry information from the
         given :py:class:`.tabbedwindow.GhostWindow` instance and moving the
         view at the index referenced by
-        :py:meth:`.tabbedwindow.GhostWindow.index()` into the newly created window.
+        :py:meth:`.tabbedwindow.GhostWindow.index()` into the newly created
+        window.
 
         :param ghost_wnd: The ghost windows instance from the D&D action
         :type ghost_wnd: :py:class:`.tabbedwindow.GhostWindow`
         :rtype: :py:class:`.tabbedwindow.TabbedWindow`
         """
-        # Create window
-        wnd = TabbedWindow()
-        wnd.setGeometry(ghost_wnd.geometry())
+        # Create new window
+        wnd = self.window().clone(ghost_wnd.geometry())
 
         # Move tab into new window
         views = self.parent()
@@ -373,6 +373,21 @@ class TabbedWindow(QtGui.QMainWindow):
         :rtype: int
         """
         return self.tabs.addTab(view, text)
+
+    def clone(self, geometry):
+        """
+        Clone the current window with the given geometry.
+
+        Override this method in your subclass of TabbedWindow to return the
+        instance of the subclass.
+
+        :param geometry: The geometry of the cloned window
+        :type geometry: QRect
+        """
+        wnd = TabbedWindow()
+        wnd.setGeometry(geometry)
+
+        return wnd
 
     def insertView(self, pos, view, text):
         """
