@@ -362,7 +362,7 @@ class TabBarTests(WidgetTestsMixin, unittest.TestCase):
         with patch.object(self.tabbar, "_move_to_window") as mock_create:
             # Simulate mouse release
             event = MouseEvent(pos)
-            ghost = self.tabbar._ghost
+            ghost = self.tabbar._ghost  # pylint: disable=W0212
 
             self.tabbar.mouseReleaseEvent(event)
 
