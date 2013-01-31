@@ -47,6 +47,15 @@ class Demo(TabbedWindow):
         blue.setStyleSheet("QMainWindow { background-color: blue; }")
         green.setStyleSheet("QMainWindow { background-color: green; }")
 
+        red.setStatusBar(QtGui.QStatusBar())
+        blue.setStatusBar(QtGui.QStatusBar())
+        green.setStatusBar(QtGui.QStatusBar())
+
+        red.statusBar().addWidget(QtGui.QLabel("Red's status bar"))
+        blue.statusBar().addWidget(QtGui.QLabel("Blue's status bar"))
+        green.statusBar().addWidget(QtGui.QLabel("Green's status bar"))
+
+        # Add views to the main window
         self.addView(red, "Red View")
         self.addView(blue, "Blue view")
         self.addView(green, "Green view")
