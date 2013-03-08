@@ -37,10 +37,10 @@ from PyQt4.QtCore import Qt
 
 class MouseEvent(QtGui.QMouseEvent):
 
-    def __init__(self, pos):
+    def __init__(self, pos, button=Qt.LeftButton):
         super(MouseEvent, self).__init__(
             QtCore.QEvent.MouseButtonPress, pos,
-            Qt.LeftButton, Qt.NoButton, Qt.NoModifier
+            button, Qt.NoButton, Qt.NoModifier
         )
 
     # Returns global's fake mouse position
