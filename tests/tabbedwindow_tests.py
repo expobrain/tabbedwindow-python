@@ -54,6 +54,34 @@ class MouseEvent(QtGui.QMouseEvent):
         return self.globalPos().y()
 
 
+class MousePress(MouseEvent):
+
+    def __init__(self, pos):
+        super(MousePress, self).__init__(
+            QtCore.QEvent.MouseButtonPress, pos,
+            Qt.LeftButton, Qt.NoButton, Qt.NoModifier
+        )
+
+
+class MouseRelease(QtGui.QMouseEvent):
+
+    def __init__(self, pos, button=Qt.LeftButton):
+        # Call superclass
+        super(MouseRelease, self).__init__(
+            QtCore.QEvent.MouseButtonRelease, pos,
+            button, Qt.NoButton, Qt.NoModifier
+        )
+
+
+class MouseMove(MouseEvent):
+
+    def __init__(self, pos):
+        super(MouseMove, self).__init__(
+            QtCore.QEvent.MouseMove, pos,
+            Qt.LeftButton, Qt.NoButton, Qt.NoModifier
+        )
+
+
 class WidgetTestsMixin(object):
     """
     GUI control tests mixin
