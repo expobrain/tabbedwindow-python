@@ -176,7 +176,7 @@ class TabBar(QtGui.QTabBar):
         """
         Move the view at the index referenced by the
         :py:meth:`.tabbedwindow.GhostWindow.index()` attribute into the given
-        tabbed window and at the given current  position
+        tabbed window and at the given current position
 
         :param tabbed_wnd: The target tabbed window instance
         :param pos: The global screen position where the view will be inserted
@@ -202,6 +202,33 @@ class TabBar(QtGui.QTabBar):
         # Set it as the current tab and raise focus to the window
         tabbed_wnd.setCurrentView(index)
         tabbed_wnd.raise_()
+
+    def _move_tab(self, pos, ghost_wnd):
+        """
+        Move the tab in-place by the given position
+
+        :param pos: The global screen position where the view will be inserted
+        :param ghost_wnd: The dragged ghost window
+
+        :type pos: QPoint
+        :type ghost_wnd: :py:class:`.tabbedwindow.GhostWindow`
+        """
+        # Move tab if more than one tab
+        if self.count() > 1:
+            # Get new tab index by pos
+            old_index = ghost_wnd.index()
+            new_index = self.tabAt(self.mapFromGlobal(pos))
+
+            if new_index == -1:
+                new_index = self.count() - 1
+
+            # Move tab only if the indices are different
+            if new_index != old_index:
+                # Move tab
+                self.moveTab(old_index, new_index)
+
+                # Workaround to notify the tab widget the correct active tab
+                self.emit(QtCore.SIGNAL(b"currentChanged(int)"), new_index)
 
     def tabRemoved(self, index):  # pylint: disable=W0613
         """
@@ -262,8 +289,12 @@ class TabBar(QtGui.QTabBar):
 
             # Choose action by the widget under the mouse's coordinates
             if isinstance(tabs, TabBar):
-                # Move the dragged tab into the window under the cursor
-                self._move_to_window(tabs.window(), pos, self._ghost)
+                if tabs == self:
+                    # Move tab in-place
+                    self._move_tab(pos, self._ghost)
+                else:
+                    # Move the dragged tab into the window under the cursor
+                    self._move_to_window(tabs.window(), pos, self._ghost)
 
             else:
                 if self.count() == 1:
