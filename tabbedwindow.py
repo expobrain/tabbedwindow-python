@@ -108,6 +108,12 @@ class GhostWindow(QtGui.QWidget):
         """
         self.move(pos - self._offset)
 
+        if self.isHidden():
+            distance = (self._origin - pos).manhattanLength()
+
+            if distance >= QtGui.QApplication.startDragDistance():
+                self.show()
+
     def dragStarted(self, pos):
         """
         Return *True* if the difference between the position of the original
@@ -254,7 +260,6 @@ class TabBar(QtGui.QTabBar):
 
         if event.button() == Qt.LeftButton and self.tabAt(pos) > -1:
             self._ghost = GhostWindow(self, pos)
-            self._ghost.show()
 
         # Call superclass
         super(TabBar, self).mousePressEvent(event)
